@@ -72,12 +72,13 @@ def gen_embedding_reports():
 
         vectors = []
 
-        dpath = "/home/eolus/workspace/research-portal/data/reports/JSON/"
-        for fname in os.listdir(dpath):
+        source_dir = "/home/eolus/workspace/research-portal/data/reports/JSON/"
+        save_dir = "/home/eolus/workspace/research-portal/data/embeddings/reports"
+        for fname in os.listdir(source_dir):
             if not fname.endswith(".json"):
                 continue  # Skip non-JSON files
 
-            file_path = os.path.join(dpath, fname)
+            file_path = os.path.join(source_dir, fname)
             report_name = fname[:-5]
             with open(file_path, "r") as f:
                 try:
@@ -90,11 +91,17 @@ def gen_embedding_reports():
             content_list = data.get("content", [])
 
             for i, paragraph in enumerate(content_list):
-                
+
                 _id = f"{report_name}-{i}"
+                fname = f"{_id}.json"
+                if fname in os.listdir(save_dir):
+                    continue
                 paragraph_text = paragraph.get("paragraph", "")
                 paragraph_title = paragraph.get("title", "")
                 embedding = get_embedding(paragraph_text)
+
+                import time
+                time.sleep(6)
 
                 vector = {
                         "id": _id,
@@ -110,8 +117,8 @@ def gen_embedding_reports():
                 vectors.append(vector)
 
                 # save as json
-                save_dir = "/home/eolus/workspace/research-portal/data/embeddings"
-                with open(f"{save_dir}/{_id}.json", "w") as f:
+                outpath = os.path.join(save_dir, fname)
+                with open(outpath, "w") as f:
                     json.dump(vector, f, indent=2)
 
         return vectors

@@ -116,13 +116,13 @@ if __name__ == "__main__":
     )
 
 
-    # vectors = load_vectors()
-    # upsert_vectors(index, vectors)
+    #vectors = load_vectors()
+    #upsert_vectors(index, vectors)
 
     # Test query
 
     # Load a question
-    fpath = "/home/eolus/workspace/research-portal/data/embeddings/questions/q0.json"
+    fpath = "/home/eolus/workspace/research-portal/data/embeddings/questions/q1.json"
     import json
     with open(fpath, 'r') as f:
         query = json.load(f)
