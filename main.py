@@ -89,12 +89,12 @@ When relevant, look for information in the files available using the `read_file_
                 model='gemini-2.5-flash-preview-05-20',
                 contents=query,
                 config=types.GenerateContentConfig(
-                    tools=[get_current_date],
+                    tools=[get_current_date, read_file_content],
                     system_instruction=system_instructions,
                     max_output_tokens=500))
 
-            print(response)
-            #print(response.text)
+
+            print(response.text)
 
         except Exception as e:
             print(f"An error occurred during the API request: {e}")
@@ -103,6 +103,3 @@ When relevant, look for information in the files available using the `read_file_
 
 if __name__ == "__main__":
     main()
-
-    # test = read_file_content("company_report_VHC.json")
-    # print(test)
