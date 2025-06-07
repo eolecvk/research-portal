@@ -2,11 +2,49 @@ import os
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+import datetime
+import sys # Import sys for sys.stdout.flush()
 
 MODEL = 'gemini-2.5-flash-preview-05-20'
 #MODEL = 'gemini-2.0-flash-001'
 
 ALLOWED_FILES_DIRECTORY = '/home/eolus/workspace/research-portal/data/reports/JSON'
+
+def print_headers():
+
+    logo = r'''
+                            =/;;/-
+                            +:    //
+                        /;      /;
+                        -X        H.
+            .//;;;:;;-,   X=        :+   .-;:=;:;%;.
+            M-       ,=;;;#:,      ,:#;;:=,       ,@
+            :%           :%.=/++++/=.$=           %=
+            ,%;         %/:+/;,,/++:+/         ;+.
+            ,+/.    ,;@+,        ,%H;,    ,/+,
+                ;+;;/= @.  .H##X   -X :///+;
+                ;+=;;;.@,  .XM@$.  =X.//;=%/.
+            ,;:      :@%=        =$H:     .+%-
+            ,%=         %;-///==///-//         =%,
+            ;+           :%-;;;;;;;;-X-           +:
+            @-      .-;;;;M-        =M/;;;-.      -X
+            :;;::;;-.    %-        :+    ,-;;-;:==
+                        ,X        H.
+                        ;/      %=
+                            //    +;
+                            ,////,
+
+'''
+
+    title = r'''
+____                               _       ____            _        _ 
+|  _ \ ___  ___  ___  __ _ _ __ ___| |__   |  _ \ ___  _ __| |_ __ _| |
+| |_) / _ \/ __|/ _ \/ _` | '__/ __| '_ \  | |_) / _ \| '__| __/ _` | |
+|  _ <  __/\__ \  __/ (_| | | | (__| | | | |  __/ (_) | |  | || (_| | |
+|_| \_\___||___/\___|\__,_|_|  \___|_| |_| |_|   \___/|_|   \__\__,_|_|                                                                  
+'''
+    print(logo)
+    print(title)
 
 def read_file_content(filename: str) -> str:
     """Reads the content of a specified file and returns it as a string.
@@ -38,8 +76,6 @@ def read_file_content(filename: str) -> str:
 
 
 
-import datetime
-
 def get_current_date() -> str:
     """Returns the current date spelled out, like 'June 16th 2025'.
     """
@@ -57,6 +93,8 @@ def get_current_date() -> str:
 
 def main():
 
+    print_headers()
+
     # Ensure environment variables are loaded
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY")
@@ -68,7 +106,7 @@ def main():
 
     while True:
 
-        query = input("\n\nQuestion:\n > ")
+        query = input("\nWhat do you need?\n > ")
 
         system_instructions = """
         You are a helpful financial analyst tasked with answering other analysts questions.
