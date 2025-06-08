@@ -1,7 +1,9 @@
 import logging
 from flask import Flask, request, jsonify, send_from_directory
-from src.query_engine import generate_ai_response # Import the centralized function
-from src.config import GEMINI_API_KEY # For initial check, though query_engine also checks
+# Import the centralized function
+from src.query_engine import generate_ai_response
+# For initial check, though query_engine also checks
+from src.config import GEMINI_API_KEY
 
 # Configure logging for the Flask app
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -22,15 +24,23 @@ def index():
 @app.route('/api/query', methods=['POST'])
 def handle_query():
     data = request.get_json()
-    user_query = data.get('query')
+    # Expecting 'history' array from the frontend
+    conversation_history = data.get('history')
 
-    if not user_query:
-        logger.warning("Received query request with no query text.")
-        return jsonify({"error": "No query provided"}), 400
+    if not conversation_history:
+        logger.warning("Received query request with no conversation history.")
+        return jsonify({"error": "No conversation history provided"}), 400
 
-    logger.info(f"Received query: '{user_query}'")
+    # Log the last user query for visibility
+    if conversation_history and conversation_history[-1]['role'] == 'user':
+        logger.info(f"Received user query: '{conversation_history[-1]['parts'][0]['text']}'")
+    else:
+        logger.info("Received query request with history (last message not a user query).")
+
+
     try:
-        response_text = generate_ai_response(user_query)
+        # Pass the entire conversation history to the AI response generator
+        response_text = generate_ai_response(conversation_history)
         logger.info("Successfully generated AI response.")
         return jsonify({"response": response_text})
     except ValueError as ve:
