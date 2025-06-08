@@ -117,7 +117,7 @@ You have access to the following specialized tools to assist with your analysis:
             model=model,
             contents=user_query,
             config=types.GenerateContentConfig(
-                tools=[_get_current_date, _read_file_content],
+                tools=[_get_current_date, _list_reports, _read_file_content],
                 system_instruction=system_instructions,
                 max_output_tokens=500
             )
