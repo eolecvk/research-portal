@@ -88,7 +88,32 @@
             border-bottom-left-radius: 5px; /* Slightly different corner for AI */
         }
 
-        .message-bubble pre {
+        /* Styles for Markdown elements within message bubbles */
+        .message-bubble.ai p {
+            margin: 0 0 1em 0; /* Adjust paragraph spacing */
+        }
+        .message-bubble.ai p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-bubble.ai ul, .message-bubble.ai ol {
+            margin: 1em 0;
+            padding-left: 20px;
+        }
+
+        .message-bubble.ai li {
+            margin-bottom: 0.5em;
+        }
+
+        .message-bubble.ai strong {
+            font-weight: bold;
+        }
+
+        .message-bubble.ai em {
+            font-style: italic;
+        }
+
+        .message-bubble.ai pre {
             background-color: #eceff1; /* Lighter background for code blocks */
             padding: 10px;
             border-radius: 8px;
@@ -100,6 +125,14 @@
             border: 1px solid var(--border-color);
             margin-top: 10px;
             margin-bottom: 0;
+        }
+
+        .message-bubble.ai code:not(pre code) { /* Inline code */
+            background-color: #e0e0e0;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9em;
         }
 
         .chat-input-area {
@@ -207,6 +240,7 @@
             transform: translateY(-1px);
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
 </head>
 <body>
     <div class="chat-container">
@@ -254,18 +288,10 @@
         function addMessage(text, sender) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message-bubble', sender);
-            if (sender === 'ai' && text.includes('```')) {
-                // If AI response contains a code block, format it
-                const parts = text.split(/(```[\s\S]*?```)/g);
-                parts.forEach(part => {
-                    if (part.startsWith('```') && part.endsWith('```')) {
-                        const pre = document.createElement('pre');
-                        pre.textContent = part.substring(3, part.length - 3).trim();
-                        messageDiv.appendChild(pre);
-                    } else {
-                        messageDiv.appendChild(document.createTextNode(part));
-                    }
-                });
+
+            if (sender === 'ai') {
+                // Use marked.js to convert Markdown to HTML
+                messageDiv.innerHTML = marked.parse(text);
             } else {
                 messageDiv.textContent = text;
             }

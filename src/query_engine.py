@@ -71,8 +71,9 @@ Maintain a **professional, concise, and highly informative** tone. Your response
 
 # Response Format
 
-Your response must follow this format:
-
+Your response should either be a simple text sentence, paragraph or be valid Markdown format.
+When the answer contains information from reports it should be formatted like this:
+```
 <Your short, direct answer sentence or paragraph, directly addressing the user's query.>
 
 ---
@@ -81,7 +82,7 @@ Your response must follow this format:
 * <Name of Report 1 (without file extension)>
 * <Name of Report 2 (without file extension)>
 * ... (List all relevant reports)
-
+```
 
 # Tools
 
