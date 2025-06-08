@@ -175,8 +175,36 @@
         .initial-message {
             text-align: center;
             color: #666;
-            margin-top: 50px;
+            margin-top: 20px; /* Adjusted margin to make space for suggestions */
             font-size: 1.1em;
+            margin-bottom: 20px; /* Space between message and suggestions */
+        }
+
+        .initial-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center the suggestions */
+            gap: 10px;
+            margin-top: 10px;
+            padding: 0 20px; /* Add some padding to align with messages */
+        }
+
+        .suggestion-item {
+            background-color: #e8f0fe; /* Light blue background for suggestions */
+            color: var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            white-space: nowrap; /* Keep text on one line */
+            box-shadow: 0 1px 3px var(--shadow-light);
+            border: 1px solid #cce0ff; /* Slightly darker border */
+        }
+
+        .suggestion-item:hover {
+            background-color: #d2e3fc; /* Darker blue on hover */
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -189,6 +217,8 @@
             <div class="message-bubble ai initial-message">
                 Hello! How can I assist you with your financial analysis today?
             </div>
+            <div class="initial-suggestions" id="initialSuggestions">
+                </div>
         </div>
         <div class="chat-input-area">
             <textarea id="queryInput" placeholder="Ask your question..." rows="1"></textarea>
@@ -200,6 +230,14 @@
         const queryInput = document.getElementById('queryInput');
         const submitButton = document.getElementById('submitButton');
         const chatMessages = document.getElementById('chatMessages');
+        const initialSuggestionsDiv = document.getElementById('initialSuggestions');
+
+        const exampleQueries = [
+            "What is our forecast for VHC's PE over the next 3 periods?",
+            "What is our FY27 earnings forecast for HPG?",
+            "Which stocks in the Oil & Gas sector currently have a Buy rating?",
+            "List and summarise all reports published today"
+        ];
 
         // Function to auto-resize textarea based on content
         queryInput.addEventListener('input', () => {
@@ -235,12 +273,43 @@
             scrollToBottom();
         }
 
+        // Function to populate and handle clicks on example queries
+        function displayExampleQueries() {
+            exampleQueries.forEach(query => {
+                const suggestionSpan = document.createElement('span');
+                suggestionSpan.classList.add('suggestion-item');
+                suggestionSpan.textContent = query;
+                suggestionSpan.addEventListener('click', () => {
+                    queryInput.value = query; // Set the input field value
+                    queryInput.style.height = 'auto'; // Reset height
+                    queryInput.style.height = queryInput.scrollHeight + 'px'; // Adjust height
+                    queryInput.focus(); // Focus on the input field
+                    // Optionally, you can automatically submit the query here
+                    // submitButton.click();
+                });
+                initialSuggestionsDiv.appendChild(suggestionSpan);
+            });
+        }
+
+        // Call this function when the page loads
+        document.addEventListener('DOMContentLoaded', displayExampleQueries);
+
+
         submitButton.addEventListener('click', async () => {
             const query = queryInput.value.trim();
 
             if (!query) {
                 alert('Please enter a query.');
                 return;
+            }
+
+            // Remove initial suggestions and message once user starts typing
+            const initialMessage = document.querySelector('.initial-message');
+            if (initialMessage) {
+                initialMessage.remove();
+            }
+            if (initialSuggestionsDiv) {
+                initialSuggestionsDiv.remove();
             }
 
             addMessage(query, 'user');
