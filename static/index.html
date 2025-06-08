@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #eee;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 80px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #loading {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+            color: #555;
+        }
+        #responseArea {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .logo-ascii {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 0.8;
+            font-size: 0.7em;
+            color: #4a7dff; /* A blueish color for the logo */
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .title-ascii {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 0.8;
+            font-size: 0.8em;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-ascii">
+            =/;;/-
+            +:     //
+            /;       /;
+            -X         H.
+    .//;;;:;;-,   X=         :+   .-;:=;:;%;.
+    M-         ,=;;;#:,     ,:#;;:=,         @
+    :%           :%.=/++++/=.$=         %=
+    ,%;          %/:+/;,,/++:+/         ;+.
+    ,+/.    ,;@+,         ,%H;,    ,/+,
+            ;+;;/= @. .H##X   -X :///+;
+            ;+=;;;.@, .XM@$. =X.//;=%/.
+    ,;:      :@%=         =$H:     .+%-
+    ,%=          %;-///==///-//         =%,
+    ;+           :%-;;;;;;;;-X-         +:
+    @-      .-;;;;M-         =M/;;;-.     -X
+    :;;::;;-.    %-         :+   ,-;;-;:==
+                ,X         H.
+                ;/       %=
+                //   +;
+                ,////,
+        </div>
+        <div class="title-ascii">
+____                                 _      ____          _      _ 
+| _ \ ___  ___  ___  __ _ _ __ ___| |__   | _ \ ___  _ __| |_ __ _| |
+| |_) / _ \/ __|/ _ \/ _` | '__/ __| '_ \  | |_) / _ \| '__| __/ _` | |
+| _ <  __/\__ \ __/ (_| | | | (__| | | | | __/ (_) | |  | || (_| | |
+|_| \_\___||___/\___|\__,_|_|  \___|_| |_| |_|  \___/|_|   \__\__,_|_| 
+        </div>
+
+        <h2>Ask the Research Portal</h2>
+        <textarea id="queryInput" placeholder="Enter your financial analysis query here..."></textarea>
+        <button id="submitButton">Get Answer</button>
+
+        <div id="loading" style="display: none;">Thinking...</div>
+
+        <div id="responseArea">
+            <h3>Response:</h3>
+            <pre id="aiResponse">Your answers will appear here.</pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', async () => {
+            const query = document.getElementById('queryInput').value;
+            const loadingDiv = document.getElementById('loading');
+            const aiResponsePre = document.getElementById('aiResponse');
+
+            if (!query.trim()) {
+                alert('Please enter a query.');
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            aiResponsePre.textContent = ''; // Clear previous response
+            document.getElementById('submitButton').disabled = true;
+
+            try {
+                const response = await fetch('/api/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json(); // Assuming backend sends JSON error
+                    throw new Error(`Server error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                }
+
+                const data = await response.json();
+                aiResponsePre.textContent = data.response;
+
+            } catch (error) {
+                console.error('Error:', error);
+                aiResponsePre.textContent = `Error: ${error.message}. Please check the server and your query.`;
+            } finally {
+                loadingDiv.style.display = 'none';
+                document.getElementById('submitButton').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

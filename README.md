@@ -13,3 +13,13 @@ Running code
 ```
 uv run python src/vector_db.py
 ```
+
+## Usage
+
+```bash
+uv run cli.py
+```
+
+```bash
+uv run app.py
+```
