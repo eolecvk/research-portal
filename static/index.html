@@ -3,161 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Portal</title>
+    <title>Research Portal Chat</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+        :root {
+            --bg-color: #f7f7f8;
+            --container-bg: #ffffff;
+            --user-bubble-bg: #e0f7fa;
+            --ai-bubble-bg: #f0f0f0;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --primary-color: #1a73e8; /* Google's blue, or a similar shade */
+            --primary-hover: #155bb5;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
+            padding: 20px;
             box-sizing: border-box;
-            margin-bottom: 20px;
         }
-        pre {
-            background-color: #eee;
-            padding: 15px;
-            border-radius: 5px;
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--container-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px var(--shadow-medium);
+            width: 100%;
+            max-width: 900px; /* Increased max-width for a wider chat area */
+            height: 85vh; /* Occupy more vertical space */
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 500;
+            box-shadow: 0 2px 10px var(--shadow-light);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Space between messages */
+            scroll-behavior: smooth;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            line-height: 1.6;
+            box-shadow: 0 1px 3px var(--shadow-light);
+        }
+
+        .message-bubble.user {
+            background-color: var(--user-bubble-bg);
+            align-self: flex-end; /* Align user messages to the right */
+            border-bottom-right-radius: 5px; /* Slightly different corner for user */
+        }
+
+        .message-bubble.ai {
+            background-color: var(--ai-bubble-bg);
+            align-self: flex-start; /* Align AI messages to the left */
+            border-bottom-left-radius: 5px; /* Slightly different corner for AI */
+        }
+
+        .message-bubble pre {
+            background-color: #eceff1; /* Lighter background for code blocks */
+            padding: 10px;
+            border-radius: 8px;
             white-space: pre-wrap;
             word-wrap: break-word;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Fira Code', 'Courier New', monospace; /* More modern monospace font */
             font-size: 0.9em;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+            margin-bottom: 0;
         }
-        h1, h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
+
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--container-bg);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
-        textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        .chat-input-area textarea {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px; /* More rounded input field */
             font-size: 1em;
-            resize: vertical;
-            min-height: 80px;
+            resize: none; /* Disable manual resize */
+            min-height: 20px; /* Adjust as needed */
+            max-height: 120px; /* Limit expansion */
+            overflow-y: auto;
             box-sizing: border-box;
+            margin-right: 10px;
+            transition: all 0.2s ease-in-out;
         }
-        button {
-            background-color: #28a745;
+
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2); /* Focus ring */
+        }
+
+        .chat-input-area button {
+            background-color: var(--primary-color);
             color: white;
-            padding: 12px 25px;
+            padding: 0 20px; /* Adjust padding for icon if needed */
             border: none;
-            border-radius: 5px;
+            border-radius: 25px; /* Rounded button */
             cursor: pointer;
             font-size: 1.1em;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            box-sizing: border-box;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* Prevent button from shrinking */
         }
-        button:hover {
-            background-color: #218838;
+
+        .chat-input-area button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
         }
-        #loading {
+
+        .chat-input-area button:disabled {
+            background-color: #b0c4de; /* Lighter shade when disabled */
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-indicator {
             text-align: center;
-            margin-top: 20px;
+            padding: 10px;
             font-style: italic;
-            color: #555;
+            color: #777;
+            animation: pulse 1.5s infinite ease-in-out;
         }
-        #responseArea {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
-        .logo-ascii {
-            font-family: monospace;
-            white-space: pre;
-            line-height: 0.8;
-            font-size: 0.7em;
-            color: #4a7dff; /* A blueish color for the logo */
+
+        .initial-message {
             text-align: center;
-            margin-bottom: 10px;
-        }
-        .title-ascii {
-            font-family: monospace;
-            white-space: pre;
-            line-height: 0.8;
-            font-size: 0.8em;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
+            color: #666;
+            margin-top: 50px;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-ascii">
-            =/;;/-
-            +:     //
-            /;       /;
-            -X         H.
-    .//;;;:;;-,   X=         :+   .-;:=;:;%;.
-    M-         ,=;;;#:,     ,:#;;:=,         @
-    :%           :%.=/++++/=.$=         %=
-    ,%;          %/:+/;,,/++:+/         ;+.
-    ,+/.    ,;@+,         ,%H;,    ,/+,
-            ;+;;/= @. .H##X   -X :///+;
-            ;+=;;;.@, .XM@$. =X.//;=%/.
-    ,;:      :@%=         =$H:     .+%-
-    ,%=          %;-///==///-//         =%,
-    ;+           :%-;;;;;;;;-X-         +:
-    @-      .-;;;;M-         =M/;;;-.     -X
-    :;;::;;-.    %-         :+   ,-;;-;:==
-                ,X         H.
-                ;/       %=
-                //   +;
-                ,////,
+    <div class="chat-container">
+        <div class="chat-header">
+            Research Portal Chat
         </div>
-        <div class="title-ascii">
-____                                 _      ____          _      _ 
-| _ \ ___  ___  ___  __ _ _ __ ___| |__   | _ \ ___  _ __| |_ __ _| |
-| |_) / _ \/ __|/ _ \/ _` | '__/ __| '_ \  | |_) / _ \| '__| __/ _` | |
-| _ <  __/\__ \ __/ (_| | | | (__| | | | | __/ (_) | |  | || (_| | |
-|_| \_\___||___/\___|\__,_|_|  \___|_| |_| |_|  \___/|_|   \__\__,_|_| 
+        <div class="chat-messages" id="chatMessages">
+            <div class="message-bubble ai initial-message">
+                Hello! How can I assist you with your financial analysis today?
+            </div>
         </div>
-
-        <h2>Ask the Research Portal</h2>
-        <textarea id="queryInput" placeholder="Enter your financial analysis query here..."></textarea>
-        <button id="submitButton">Get Answer</button>
-
-        <div id="loading" style="display: none;">Thinking...</div>
-
-        <div id="responseArea">
-            <h3>Response:</h3>
-            <pre id="aiResponse">Your answers will appear here.</pre>
+        <div class="chat-input-area">
+            <textarea id="queryInput" placeholder="Ask your question..." rows="1"></textarea>
+            <button id="submitButton">Send</button>
         </div>
     </div>
 
     <script>
-        document.getElementById('submitButton').addEventListener('click', async () => {
-            const query = document.getElementById('queryInput').value;
-            const loadingDiv = document.getElementById('loading');
-            const aiResponsePre = document.getElementById('aiResponse');
+        const queryInput = document.getElementById('queryInput');
+        const submitButton = document.getElementById('submitButton');
+        const chatMessages = document.getElementById('chatMessages');
 
-            if (!query.trim()) {
+        // Function to auto-resize textarea based on content
+        queryInput.addEventListener('input', () => {
+            queryInput.style.height = 'auto';
+            queryInput.style.height = queryInput.scrollHeight + 'px';
+        });
+
+        // Function to scroll to the bottom of the chat
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to add a message to the chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message-bubble', sender);
+            if (sender === 'ai' && text.includes('```')) {
+                // If AI response contains a code block, format it
+                const parts = text.split(/(```[\s\S]*?```)/g);
+                parts.forEach(part => {
+                    if (part.startsWith('```') && part.endsWith('```')) {
+                        const pre = document.createElement('pre');
+                        pre.textContent = part.substring(3, part.length - 3).trim();
+                        messageDiv.appendChild(pre);
+                    } else {
+                        messageDiv.appendChild(document.createTextNode(part));
+                    }
+                });
+            } else {
+                messageDiv.textContent = text;
+            }
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        submitButton.addEventListener('click', async () => {
+            const query = queryInput.value.trim();
+
+            if (!query) {
                 alert('Please enter a query.');
                 return;
             }
 
-            loadingDiv.style.display = 'block';
-            aiResponsePre.textContent = ''; // Clear previous response
-            document.getElementById('submitButton').disabled = true;
+            addMessage(query, 'user');
+            queryInput.value = ''; // Clear input
+            queryInput.style.height = 'auto'; // Reset textarea height
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.classList.add('loading-indicator');
+            loadingDiv.textContent = 'Thinking...';
+            chatMessages.appendChild(loadingDiv);
+            scrollToBottom();
+            submitButton.disabled = true;
 
             try {
                 const response = await fetch('/api/query', {
@@ -168,20 +263,22 @@ ____                                 _      ____          _      _
                     body: JSON.stringify({ query: query })
                 });
 
+                chatMessages.removeChild(loadingDiv); // Remove loading indicator
+
                 if (!response.ok) {
-                    const errorData = await response.json(); // Assuming backend sends JSON error
+                    const errorData = await response.json();
                     throw new Error(`Server error: ${response.status} - ${errorData.error || 'Unknown error'}`);
                 }
 
                 const data = await response.json();
-                aiResponsePre.textContent = data.response;
+                addMessage(data.response, 'ai');
 
             } catch (error) {
                 console.error('Error:', error);
-                aiResponsePre.textContent = `Error: ${error.message}. Please check the server and your query.`;
+                chatMessages.removeChild(loadingDiv); // Remove loading indicator on error
+                addMessage(`Error: ${error.message}. Please check the server and your query.`, 'ai');
             } finally {
-                loadingDiv.style.display = 'none';
-                document.getElementById('submitButton').disabled = false;
+                submitButton.disabled = false;
             }
         });
     </script>
