@@ -1,6 +1,6 @@
 import sys
 import logging
-from src.query_engine import generate_ai_response # Import the centralized function
+from query_engine import generate_ai_response # Import the centralized function
 
 # Configure basic logging for CLI
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

@@ -1,4 +1,4 @@
-import os
+import os, sys
 import json
 import logging
 from pinecone import Pinecone, ServerlessSpec
@@ -6,7 +6,7 @@ from tqdm import tqdm # Assuming tqdm is installed
 from src.config import (
     PINECONE_API_KEY,
     INDEX_NAME,
-    NAMESPACE, # Although not used directly in current ops, good to keep in config
+    NAMESPACE, # good to keep in config
     EMBED_DIM,
     PINECONE_CLOUD,
     PINECONE_REGION,
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     # python src/vector_db.py query <path_to_question_json>
 
     import argparse
-    from src.gen_embed import get_embedding # Needed for test query
+    from gen_embed import get_embedding # Needed for test query
 
     parser = argparse.ArgumentParser(description="Manage Pinecone vector database.")
     parser.add_argument("action", choices=["init", "upsert", "query"],

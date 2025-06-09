@@ -3,7 +3,10 @@ name = "research-portal"
 version = "0.1.0"
 description = "Analyst Assistant"
 authors = ["Eole Cervenka"]
-package-mode = false
+
+packages = [
+    { include = "src" }
+]
 
 [tool.poetry.dependencies]
 python = "~3.12.0"
@@ -13,5 +16,5 @@ google-genai = "1.19.0"
 flask = "3.1.1"
 
 [tool.poetry.scripts]
-start-app = "app:main"
-start-cli = "cli:main"
+start-app = "src.app:main"
+start-cli = "src.cli:main"
