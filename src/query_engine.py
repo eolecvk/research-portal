@@ -5,6 +5,8 @@ import datetime
 import logging
 from google import genai
 from google.genai import types
+from pathlib import Path
+
 
 # Import configurations and API key from src/config.py
 from src.config import (
@@ -16,10 +18,21 @@ from src.config import (
 # Configure logging for this module
 logger = logging.getLogger(__name__)
 
+# Override REPORTS_JSON_DIR if 'downloads' directory exists
+downloads_path = Path("downloads")
+if downloads_path.exists() and downloads_path.is_dir():
+    REPORTS_JSON_DIR = downloads_path
+    logger.info(f"Using downloads directory for reports: {REPORTS_JSON_DIR}")
+else:
+    logger.info(f"Using configured reports directory: {REPORTS_JSON_DIR}")
+
+
+
 # Initialize LLM Client (ensure API key is available)
 if not GEMINI_API_KEY:
     raise ValueError("GEMINI_API_KEY environment variable not set. Please set it in your .env file.")
 LLM_CLIENT = genai.Client(api_key=GEMINI_API_KEY)
+
 
 
 # --- Helper Functions (Tools) ---
