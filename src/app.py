@@ -50,6 +50,10 @@ def handle_query():
         logger.error(f"An unexpected error occurred during AI response generation: {e}", exc_info=True)
         return jsonify({"error": f"An internal server error occurred: {e}"}), 500
 
-if __name__ == '__main__':
+
+def main():
     logger.info("Starting Flask backend server...")
     app.run(debug=True, host='0.0.0.0', port=5000) # Run on all interfaces for testing
+
+if __name__ == '__main__':
+    main()
