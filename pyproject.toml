@@ -14,3 +14,4 @@ flask = "3.1.1"
 
 [tool.poetry.scripts]
 start-app = "app:main"
+start-cli = "cli:main"

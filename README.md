@@ -8,18 +8,12 @@ PINECODE_API_KEY = xxx-xxxxxx-xxxxxx
 GEMINI_API_KEY   = xxx-xxxxxx-xxxxxx
 ```
 
-
-Running code
-```
-uv run python src/vector_db.py
-```
-
 ## Usage
 
 ```bash
-uv run cli.py
+poetry  run start-cli
 ```
 
 ```bash
-uv run app.py
+poetry run start-app
 ```
