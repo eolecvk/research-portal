@@ -50,6 +50,25 @@ def _get_current_date() -> str:
     return now.strftime(f"%B {day}{suffix} %Y")
 
 
+
+import requests
+
+def _convert(from_currency, to_currency, amount):
+    url = "https://api.frankfurter.dev/v1/latest"
+    params = {
+        "base": from_currency,
+        "symbols": to_currency
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        rate = data["rates"][to_currency]
+        converted_amount = round(amount * rate, 2)
+        return converted_amount
+
+
+
 def _list_reports() -> list[str]:
     """List the names of the reports available
     Only allows reading files from a pre-defined directory (REPORTS_JSON_DIR).
